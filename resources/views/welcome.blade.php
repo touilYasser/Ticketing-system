@@ -8,7 +8,6 @@
 </head>
 <body class="antialiased bg-gray-100">
 
-    {{-- Header --}}
     <header class="bg-blue-600 text-white py-4">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">Helpdesk - Support Technique</h1>
@@ -29,13 +28,11 @@
         </div>
     </header>
 
-    {{-- Main Content --}}
     <main class="container mx-auto py-10">
         <h2 class="text-center text-3xl font-bold mb-4">Bienvenue sur notre plateforme Helpdesk</h2>
         <p class="text-center text-gray-700 mb-6">Déclarez, suivez et gérez les incidents en toute simplicité.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-5">
-            {{-- Client --}}
             <div class="bg-white p-6 shadow-md rounded">
                 <h3 class="text-lg font-semibold mb-2">Espace Clients</h3>
                 <p class="text-gray-600 mb-4">Créez des tickets pour signaler un incident et suivez l'évolution de vos demandes.</p>
@@ -57,6 +54,8 @@
             </div>
         </div>
     </main>
+
+    @include('components.footer')
 
 </body>
 </html>
