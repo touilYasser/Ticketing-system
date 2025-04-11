@@ -64,3 +64,56 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+1. Introduction
+Le projet "Système de gestion des tickets d'incidents (Helpdesk)" vise à développer une plateforme permettant aux utilisateurs de signaler des incidents et aux agents de les traiter efficacement.
+2. Objectifs du projet
+•	Fournir un outil centralisé pour la gestion des tickets d'incidents.
+•	Optimiser le suivi et la résolution des problèmes signalés.
+•	Offrir une interface intuitive pour les utilisateurs et les agents.
+•	Assurer une traçabilité des interactions et des résolutions.
+3. Description du besoin
+Les entreprises ont besoin d'un système efficace pour réceptionner, assigner et suivre les tickets d'incidents soumis par les utilisateurs. Actuellement, ces processus sont souvent gérés manuellement ou via des outils non adaptés.
+4. Fonctionnalités attendues
+4.1. Gestion des utilisateurs
+•	Inscription et authentification (administrateur, agents, clients).
+•	Gestion des rôles et permissions.
+4.2. Gestion des tickets
+•	Création et soumission de tickets avec priorité.
+•	Assignation automatique ou manuelle aux agents.
+•	Modification de l'état du ticket (ouvert, en cours, résolu, fermé).
+•	Ajout de commentaires et de fichiers joints.
+•	Historique des modifications.
+4.3. Notifications
+•	Envoi d'e-mails pour les mises à jour des tickets.
+•	Notifications en temps réel sur le tableau de bord.
+4.4. Tableau de bord et statistiques
+•	Vue globale des tickets (ouverts, en cours, résolus).
+•	Statistiques sur le nombre de tickets par agent.
+5. Contraintes techniques
+•	Utilisation du framework Laravel.
+•	Base de données MySQL.
+•	Interface utilisateur responsive avec Bootstrap et Tailwind CSS.
+•	Utilisation d'APIs REST pour les interactions.
+6. Architecture et technologies
+•	Backend : Laravel (PHP 8+), Eloquent ORM.
+•	Frontend : Blade, Tailwind CSS et Bootstrap.
+•	Base de données : MySQL.
+•	Authentification : Laravel Breeze.
+•	Gestion des rôles.
+7. Modèle de données
+Tables principales
+•	users : Gestion des utilisateurs (admin, agents, clients).
+•	tickets : Informations sur les tickets (titre, description, statut, priorité, utilisateur assigné).
+•	comments : Commentaires liés aux tickets.
+•	notifications : Notifications envoyées aux utilisateurs.
+•	attachments : Fichiers joints aux tickets.
+8. Sécurité et gestion des accès
+•	Authentification via Laravel Breeze.
+•	Protection des routes selon les rôles.
+•	Validation des entrées utilisateur.
+•	Protection contre les attaques CSRF et XSS.
+9. Conclusion
+Ce projet vise à offrir une solution efficace pour la gestion des incidents en entreprise. Il repose sur une architecture Laravel robuste et propose une expérience utilisateur optimisée. L'intégration de statistiques et de notifications assurera une meilleure réactivité dans la résolution des tickets.
+
