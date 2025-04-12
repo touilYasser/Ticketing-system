@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->enum('status', ['ouvert', 'en_cours', 'résolu', 'fermé'])->default('ouvert');
+            $table->enum('status', ['ouvert', 'en_cours', 'resolu', 'ferme'])->default('ouvert');
             $table->string('category');
             $table->enum('priority', ['basse', 'moyenne', 'haute'])->default('moyenne');
             

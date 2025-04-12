@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Agent\AgentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\TicketsController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,18 @@ Route::middleware('auth')->group(function () {
 
 // client routes
 Route::middleware(['auth', 'userMiddleware'])->group(function () {
+
+    // dashboard
     Route::get('dashboard', [UserController::class, 'index'])->name('dashboard');
+
+    // tickets
+    Route::get('/tickets', [TicketsController::class, 'index'])->name('client.tickets.index');
+    Route::get('/tickets/create', [TicketsController::class, 'create'])->name('client.tickets.create');
+    Route::post('/tickets', [TicketsController::class, 'store'])->name('client.tickets.store');
+    Route::get('/tickets/{ticket}', [TicketsController::class, 'show'])->name('client.tickets.show');
+
+    // Route pour ajouter un commentaire à un ticket
+    Route::post('/tickets/{ticket}/comments', [TicketsController::class, 'addComment'])->name('client.tickets.addComment');
 });
 
 
