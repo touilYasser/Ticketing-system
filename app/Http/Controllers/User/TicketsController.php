@@ -10,11 +10,21 @@ use Illuminate\Support\Facades\Auth;
 
 class TicketsController extends Controller
 {
-    public function index()
-    {
-        $tickets = Ticket::where('user_id', Auth::id())->get(); // Récupère les tickets du client connecté
-        return view('client.tickets.index', compact('tickets'));
-    }
+    public function index(Request $request)
+{
+    $ticketsQuery = Ticket::with('attachments')
+        ->where('user_id', Auth::id())
+        ->when($request->status, fn($q) => $q->where('status', $request->status))
+        ->when($request->priority, fn($q) => $q->where('priority', $request->priority))
+        ->when($request->category, fn($q) => $q->where('category', $request->category))
+        ->latest();
+
+    $tickets = $ticketsQuery->paginate(10);
+
+    $categories = Ticket::where('user_id', Auth::id())->distinct()->pluck('category');
+
+    return view('client.tickets.index', compact('tickets', 'categories'));
+}
 
     // Afficher le formulaire de création de ticket
     public function create()
@@ -24,26 +34,37 @@ class TicketsController extends Controller
 
     // Enregistrer un nouveau ticket
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'priority' => 'required|in:basse,moyenne,haute', // Exemple de priorités
-            'category' => 'required|string|max:255',  // Catégorie de ticket
-        ]);
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'attachments' => 'nullable|array',
+        'attachments.*' => 'nullable|file|max:2048',
+    ]);
 
-        // Créer le ticket
-        Ticket::create([
-            'user_id' => Auth::id(), // ID du client connecté
-            'title' => $request->title,
-            'description' => $request->description,
-            'priority' => $request->priority,
-            'category' => $request->category,
-            'status' => 'ouvert', // Statut initial
-        ]);
+    $ticket = Ticket::create([
+        'user_id' => Auth::id(),
+        'title' => $request->title,
+        'description' => $request->description,
+        'status' => 'ouvert',
+    ]);
 
-        return redirect()->route('client.tickets.index')->with('success', 'Ticket créé avec succès!');
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $file) {
+            $path = $file->store('attachments', 'public');
+
+            $ticket->attachments()->create([
+                'file_path' => $path,
+                'file_name' => $file->getClientOriginalName(),
+                'user_id' => Auth::id(),
+            ]);
+        }
     }
+
+    return redirect()->route('client.tickets.index')->with('success', 'Ticket créé avec succès!');
+}
+
+
 
     // Afficher les détails d'un ticket
     public function show($id)
@@ -56,7 +77,7 @@ class TicketsController extends Controller
     public function addComment(Request $request, $ticketId)
     {
         $request->validate([
-            'comment' => 'required|string',
+            'content' => 'required|string',
         ]);
 
         // Trouver le ticket
@@ -66,7 +87,7 @@ class TicketsController extends Controller
         Comment::create([
             'ticket_id' => $ticket->id,
             'user_id' => Auth::id(), // L'utilisateur connecté
-            'comment' => $request->comment,
+            'content' => $request->content,
         ]);
 
         return redirect()->route('client.tickets.show', $ticket->id)->with('success', 'Commentaire ajouté avec succès!');

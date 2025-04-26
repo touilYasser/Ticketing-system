@@ -18,7 +18,7 @@
                     @elseif(Auth::user()->role == 'agent')
                         <a href="{{ route('agent.dashboard') }}" class="text-white px-4 py-2 bg-blue-700 rounded hover:bg-blue-800">Dashboard</a>
                     @else
-                        <a href="{{ route('dashboard') }}" class="text-white px-4 py-2 bg-blue-700 rounded hover:bg-blue-800">Dashboard</a>
+                        <a href="{{ route('client.dashboard') }}" class="text-white px-4 py-2 bg-blue-700 rounded hover:bg-blue-800">Dashboard</a>
                     @endif
                 @else
                     <a href="{{ route('login') }}" class="text-white px-4 py-2 bg-blue-700 rounded hover:bg-blue-800">Connexion</a>

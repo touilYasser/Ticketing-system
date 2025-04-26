@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('agent.dashboard');
         }
 
-        return redirect()->intended('dashboard');
+        return redirect()->intended('client/dashboard');
     }
 
     /**

@@ -19,7 +19,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('client.tickets.store') }}">
+                <form method="POST" action="{{ route('client.tickets.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-4">
                         <label for="title" class="block text-sm font-medium text-gray-700">Titre</label>
@@ -30,19 +30,11 @@
                         <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
                         <textarea name="description" id="description" rows="4" class="mt-1 block w-full" required></textarea>
                     </div>
-
+                    
                     <div class="mb-4">
-                        <label for="priority" class="block text-sm font-medium text-gray-700">Priorité</label>
-                        <select name="priority" id="priority" class="mt-1 block w-full" required>
-                            <option value="basse">Basse</option>
-                            <option value="moyenne">Moyenne</option>
-                            <option value="haute">Haute</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="category" class="block text-sm font-medium text-gray-700">Catégorie</label>
-                        <input type="text" name="category" id="category" class="mt-1 block w-full" required>
+                        <label for="attachments" class="block text-sm font-medium text-gray-700">Pièces jointes</label>
+                        <input type="file" name="attachments[]" multiple
+                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
                     </div>
 
                     <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Créer le ticket</button>

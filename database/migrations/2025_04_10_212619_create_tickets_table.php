@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->enum('status', ['ouvert', 'en_cours', 'resolu', 'ferme'])->default('ouvert');
-            $table->string('category');
-            $table->enum('priority', ['basse', 'moyenne', 'haute'])->default('moyenne');
+            $table->string('category')->nullable();
+            $table->enum('priority', ['basse', 'moyenne', 'haute'])->nullable();
             
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('agent_id')->nullable();
