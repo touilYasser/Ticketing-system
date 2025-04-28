@@ -29,7 +29,7 @@
                         <span class="
                             @if ($ticket->priority === 'haute') text-danger
                             @elseif ($ticket->priority === 'moyenne') text-warning
-                            @elseif ($ticket->priority === 'basse') text-primmary
+                            @elseif ($ticket->priority === 'basse') text-primary
                             @else text-gray-700 @endif
                         ">
                             {{ ucfirst($ticket->priority) }}
@@ -37,6 +37,16 @@
                     </p>
                     
                     <p><strong>Catégorie:</strong> {{ $ticket->category }}</p>
+                </div>
+
+                <!-- Affichage de la date d'échéance -->
+                <div class="mt-4 flex items-center">
+                    <h4 class="font-medium mr-2">Date d'échéance:</h4>
+                    @if ($ticket->due_date)
+                        <span class="text-danger fw-bold">{{ $ticket->due_date }}</span>
+                    @else
+                        <span>Aucune date d'échéance définie.</span>
+                    @endif
                 </div>
 
                 <!-- Agent assigné -->

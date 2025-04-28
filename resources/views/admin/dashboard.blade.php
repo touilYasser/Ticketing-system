@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 <!-- Statistiques du tableau de bord -->
-                <div class="grid grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                     <div class="bg-blue-600 text-white p-4 rounded">
                         <h3 class="text-lg font-semibold">Total des tickets</h3>
                         <p>{{ $ticketCount }}</p>
@@ -26,6 +26,10 @@
                         <h3 class="text-lg font-semibold">Tickets résolus</h3>
                         <p>{{ $resolvedTickets }}</p>
                     </div>
+                    <div class="bg-red-600 text-white p-4 rounded">
+                        <h3 class="text-lg font-semibold">Tickets fermes</h3>
+                        <p>{{ $resolvedTickets }}</p>
+                    </div>
                 </div>
 
                 <!-- Liste des tickets avec assignation d'agent -->
@@ -40,7 +44,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($tickets as $ticket)
+                        @forelse($tickets as $ticket)
                             <tr>
                                 <td class="px-4 py-2 border border-gray-300">{{ $ticket->title }}</td>
                                 <td class="px-4 py-2 border">
@@ -75,7 +79,11 @@
                                     <a href="{{ route('admin.tickets.show', $ticket->id) }}" class="text-blue-600 hover:underline fw-bolder">Voir</a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center px-4 py-2 text-red-600">Aucun ticket disponible</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

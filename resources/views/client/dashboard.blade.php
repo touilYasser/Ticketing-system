@@ -14,28 +14,39 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
              <!-- Notifications -->
-             <div class="bg-white p-6 rounded shadow">
+            <div class="bg-white p-6 rounded shadow">
                 <h3 class="text-lg font-semibold mb-4">Notifications</h3>
-                @if ($notifications->isEmpty())
-                    <p class="text-gray-600">Aucune notification pour le moment.</p>
-                @else
-                    <ul>
-                        @foreach ($notifications as $notification)
-                            <li class="py-2 {{ $notification->read_at ? '' : 'font-bold' }}">
-                                <a href="{{ $notification->data['url'] }}" class="text-blue-600 hover:underline">
-                                    {{ $notification->data['message'] }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
+
+                <div id="notifications-list">
+                    @if ($notifications->isEmpty())
+                        <p class="text-gray-600">Aucune notification pour le moment.</p>
+                    @else
+                        <ul>
+                            @foreach ($notifications as $notification)
+                                <li class="py-2 {{ $notification->read_at ? '' : 'font-bold' }}">
+                                    <a href="{{ route('notifications.read', $notification->id) }}" class="text-blue-600 hover:underline">
+                                        {{ $notification->data['message'] ?? 'Notification' }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        <div class="mt-4">
+                            {{ $notifications->links() }}
+                        </div>
+                    @endif
+                </div>
             </div>
 
             <!-- Statistiques -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div class="bg-white p-6 rounded shadow text-center">
                     <h3 class="text-gray-600">Total</h3>
                     <p class="text-2xl font-bold">{{ $total }}</p>
+                </div>
+                <div class="bg-blue-100 p-6 rounded shadow text-center">
+                    <h3 class="text-gray-600">Ouverts</h3>
+                    <p class="text-2xl font-bold">{{ $opened }}</p>
                 </div>
                 <div class="bg-green-100 p-6 rounded shadow text-center">
                     <h3 class="text-gray-600">Résolus</h3>
@@ -47,7 +58,7 @@
                 </div>
                 <div class="bg-red-100 p-6 rounded shadow text-center">
                     <h3 class="text-gray-600">Fermés</h3>
-                    <p class="text-2xl font-bold">{{ $closed }}</p>
+                    <p class="text-2xl font-bold">{{ $close }}</p>
                 </div>
             </div>
 
@@ -104,47 +115,65 @@
         </div>
     </div>
 
+    @vite(['resources/js/app.js'])
+
     <!-- Injection des données dans le JS -->
     <script>
+        
+        window.opened = {{ $opened }};
         window.resolved = {{ $resolved }};
         window.inProgress = {{ $inProgress }};
-        window.closed = {{ $closed }};
+        window.close = {{ $close }};
     </script>
 
-    @vite(['resources/js/app.js'])
+    
 
     <!-- Script du graphique -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const ctx = document.getElementById('ticketStatusChart');
-            if (ctx && window.Chart) {
-                new window.Chart(ctx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Résolus', 'En cours', 'Fermés'],
-        datasets: [{
-            data: [window.resolved, window.inProgress, window.closed],
-            backgroundColor: ['#10B981', '#FBBF24', '#EF4444'],
-            borderWidth: 0
-        }]
-    },
-    options: {
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    color: '#4B5563',
-                    font: {
-                        size: 14
+    const ctx = document.getElementById('ticketStatusChart');
+
+    if (ctx && window.Chart) {
+        new window.Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ouverts','Résolus', 'En cours', 'Fermés'],
+                datasets: [{
+                    data: [
+                            window.opened,
+                            window.resolved,
+                            window.inProgress,
+                            window.close,
+                    ],
+                    backgroundColor: [
+                        '#3B82F6', // bleu 
+                        '#10B981', // vert
+                        '#FBBF24', // jaune
+                        '#FF0000'  // rouge
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                }]
+            },
+            options: {
+                maintainAspectRatio: true, // permet de garder les proportions
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#4B5563',
+                            font: {
+                                size: 14
+                            }
+                        }
                     }
-                }
-            }
-        },
-        cutout: '70%', 
-    }
-});
+                },
+                cutout: '70%',
             }
         });
+    }
+});
     </script>
 
 </x-app-layout>

@@ -3,13 +3,14 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Agent\AgentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\User\TicketsController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 
 Route::middleware('auth')->group(function () {
@@ -28,6 +29,8 @@ Route::prefix('client')->middleware(['auth', 'userMiddleware'])->group(function 
     Route::get('/tickets/{ticket}', [TicketsController::class, 'show'])->name('client.tickets.show');
 
     Route::post('/tickets/{ticket}/comments', [TicketsController::class, 'addComment'])->name('client.tickets.addComment');
+
+    Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 });
 
 
@@ -61,6 +64,8 @@ Route::middleware(['auth', 'agentMiddleware'])->group(function () {
     Route::put('/agent/tickets/{ticket}', [AgentController::class, 'update'])->name('agent.tickets.update');
     
     Route::post('/agent/tickets/{ticket}/comment', [AgentController::class, 'comment'])->name('agent.tickets.comment');
+
+    Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 });
 
 require __DIR__.'/auth.php';

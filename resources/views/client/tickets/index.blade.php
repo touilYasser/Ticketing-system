@@ -131,7 +131,7 @@
                     <div>
                         <label for="category" class="block text-sm font-medium text-gray-700">Catégorie</label>
                         <select name="category" id="category" class="form-select mt-1 block w-full">
-                            <option value="">Toutes</option>
+                            <option value="" selected>Toutes</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>{{ ucfirst($cat) }}</option>
                             @endforeach

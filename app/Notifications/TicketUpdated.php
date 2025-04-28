@@ -2,13 +2,17 @@
 
 namespace App\Notifications;
 
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\DatabaseMessage;
+use Illuminate\Support\Facades\Log;
 
 class TicketUpdated extends Notification
 {
-    public $ticket;
-    public $message;
+    use Queueable;
+
+    protected $ticket;
+    protected $message;
 
     public function __construct($ticket, $message)
     {
@@ -18,16 +22,16 @@ class TicketUpdated extends Notification
 
     public function via($notifiable)
     {
-        return ['database']; // tu peux ajouter 'mail' si tu veux
+        return ['database']; // Très important, pour stocker dans la base
     }
 
     public function toDatabase($notifiable)
-    {
-        return [
-            'ticket_id' => $this->ticket->id,
-            'title' => $this->ticket->title,
-            'message' => $this->message,
-            'url' => route('client.tickets.show', $this->ticket->id),
-        ];
-    }
+{
+    Log::info('Notification envoyée à : ' . $notifiable->email);  // Ajoute un log pour vérifier l'utilisateur
+
+    return [
+        'message' => $this->message,
+        'url' => route('client.tickets.show', $this->ticket->id),
+    ];
+}
 }

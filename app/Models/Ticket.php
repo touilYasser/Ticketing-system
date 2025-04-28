@@ -19,6 +19,8 @@ class Ticket extends Model
         'agent_id',
     ];
 
+    protected $dates = ['due_date'];
+
     // Le client qui a créé le ticket
     public function client()
     {

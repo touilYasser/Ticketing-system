@@ -24,8 +24,9 @@ class AdminController extends Controller
     $openTickets = Ticket::where('status', 'ouvert')->count();
     $inProgressTickets = Ticket::where('status', 'en_cours')->count();
     $resolvedTickets = Ticket::where('status', 'resolu')->count();
+    $closedTickets = Ticket::where('status', 'ferme')->count();
 
-    return view('admin.dashboard', compact('tickets', 'agents', 'ticketCount', 'openTickets', 'inProgressTickets', 'resolvedTickets'));
+    return view('admin.dashboard', compact('tickets', 'agents', 'ticketCount', 'openTickets', 'inProgressTickets', 'resolvedTickets','closedTickets'));
 }
 
 public function assignAgent(Request $request, Ticket $ticket)
@@ -35,9 +36,15 @@ public function assignAgent(Request $request, Ticket $ticket)
     ]);
 
     $ticket->agent_id = $request->agent_id; // Assigner l'agent au ticket
+
+    // Définir la date d'échéance si elle est vide
+    if (is_null($ticket->due_date)) {
+        $ticket->due_date = now()->addWeek();  // Ajouter 7 jours à la date actuelle
+    }
+
     $ticket->save();
 
-    return redirect()->route('admin.tickets.show', $ticket->id)
+    return redirect()->route('admin.dashboard', $ticket->id)
                      ->with('success', 'Agent assigné avec succès');
 }
 
@@ -68,7 +75,7 @@ public function update(Request $request, Ticket $ticket)
 
     $ticket->update($validated);
 
-    $message = 'Le statut de votre ticket a été mis à jour par un administrateur.';
+    $message = 'Le statut de votre ticket ' . $ticket->id .' a été mis à jour par un administrateur.';
 
     // 🔔 Notifier le client
     if ($ticket->client) {

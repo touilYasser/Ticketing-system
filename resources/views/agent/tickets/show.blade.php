@@ -15,7 +15,7 @@
                 <ul>
                     @foreach($ticket->comments as $comment)
                         <li>
-                            <strong>{{ $comment->user->name }} :</strong> {{ $comment->comment }}
+                            <strong>{{ $comment->user->name }} :</strong> {{ $comment->content }}
                         </li>
                     @endforeach
                 </ul>
@@ -32,8 +32,8 @@
                 <form method="POST" action="{{ route('agent.tickets.comment', $ticket->id) }}">
                     @csrf
                     <div class="mt-4">
-                        <label for="comment" class="block text-sm font-medium text-gray-700">Ajouter un commentaire</label>
-                        <textarea name="comment" id="comment" rows="4" class="mt-1 block w-full" required></textarea>
+                        <label for="content" class="block text-sm font-medium text-gray-700">Ajouter un commentaire</label>
+                        <textarea name="content" id="content" rows="4" class="mt-1 block w-full" required></textarea>
                     </div>
                     <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Ajouter le commentaire</button>
                 </form>
@@ -46,8 +46,8 @@
                         <select name="status" id="status" class="mt-1 block w-full">
                             <option value="en_cours" {{ $ticket->status == 'en_cours' ? 'selected' : '' }}>En cours</option>
                             <option value="resolu" {{ $ticket->status == 'resolu' ? 'selected' : '' }}>Resolu</option>
-                            <option value="resolu" {{ $ticket->status == 'ouvert' ? 'selected' : '' }}>ouvert</option>
-                            <option value="resolu" {{ $ticket->status == 'ferme' ? 'selected' : '' }}>Ferme</option>
+                            <option value="ouvert" {{ $ticket->status == 'ouvert' ? 'selected' : '' }}>ouvert</option>
+                            <option value="ferme" {{ $ticket->status == 'ferme' ? 'selected' : '' }}>Ferme</option>
                         </select>
                     </div>
                     <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Mettre à jour le statut</button>

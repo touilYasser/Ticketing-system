@@ -16,16 +16,57 @@
                     <ul>
                         @foreach ($notifications as $notification)
                             <li class="py-2 {{ $notification->read_at ? '' : 'font-bold' }}">
-                                <a href="{{ $notification->data['url'] }}" class="text-blue-600 hover:underline">
-                                    {{ $notification->data['message'] }}
+                                <a href="{{ route('notifications.read', $notification->id) }}" class="text-blue-600 hover:underline">
+                                    {{ $notification->data['message'] ?? 'Notification' }}
                                 </a>
                             </li>
                         @endforeach
                     </ul>
+
+                    <!-- Ajouter la pagination si nécessaire -->
+                    <div class="mt-4">
+                        {{ $notifications->links() }}
+                    </div>
                 @endif
             </div>
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
 
+            <!-- Badge de Performance -->
+            @if ($todayResolvedTickets >= 5)
+                <div class="bg-green-100 text-green-800 p-4 rounded shadow mb-6">
+                    🏆 Bravo ! Vous avez résolu {{ $todayResolvedTickets }} tickets aujourd'hui !
+                </div>
+            @endif
+
+            <!-- Historique d’activité -->
+            <div class="bg-white p-6 rounded shadow mb-6">
+                <h3 class="text-lg font-semibold mb-4">Historique d'activité</h3>
+                <ul class="space-y-2">
+                    @foreach ($recentComments as $ticket)
+                        <li>💬 Vous avez commenté sur le Ticket #{{ $ticket->id }} il y a {{ $ticket->comments->first()->created_at->diffForHumans() }}</li>
+                    @endforeach
+                    @foreach ($recentStatusChanges as $ticket)
+                        <li>🎯 Le statut du Ticket #{{ $ticket->id }} a été modifié récemment à {{ ucfirst($ticket->status) }}.</li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <!-- Prochaines Échéances -->
+            <div class="bg-white p-6 rounded shadow mb-6">
+                <h3 class="text-lg font-semibold mb-4">Prochaines échéances</h3>
+                <ul class="space-y-2">
+                    @foreach ($upcomingDeadlines as $ticket)
+                        <li>📅 Ticket #{{ $ticket->id }} - 
+                            @if ($ticket->due_date)
+                                À rendre pour <span class="text-danger fw-bold">{{ $ticket->due_date }}</span>
+                            @else
+                                Date d'échéance non définie
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                 @if (session('success'))
                     <div id="success-message" class="message bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                         <strong class="font-bold">Succès!</strong>
@@ -37,8 +78,6 @@
                         <span>{{ session('error') }}</span>
                     </div>
                 @endif
-
-                
 
                 <!-- Formulaire de filtre -->
                 <form method="GET" action="{{ route('agent.dashboard') }}" class="mb-4">
@@ -85,8 +124,28 @@
                         @foreach($tickets as $ticket)
                             <tr>
                                 <td class="py-2 px-4 border-b">{{ $ticket->title }}</td>
-                                <td class="py-2 px-4 border-b">{{ ucfirst($ticket->status) }}</td>
-                                <td class="py-2 px-4 border-b">{{ ucfirst($ticket->priority) }}</td>
+                                <td class="px-4 py-2 border-b">
+                                    <span class="
+                                        @if ($ticket->status == 'ouvert') text-primary fw-bolder
+                                        @elseif ($ticket->status == 'en_cours') text-warning fw-bolder
+                                        @elseif ($ticket->status == 'resolu') text-success fw-bolder
+                                        @else text-danger fw-bolder
+                                        @endif
+                                    ">
+                                        {{ ucfirst($ticket->status) }}
+                                    </span>
+                                </td>
+                    
+                                <td class="px-4 py-2 border-b">
+                                    <span class="
+                                        @if ($ticket->priority == 'basse') text-success fw-bolder
+                                        @elseif ($ticket->priority == 'moyenne') text-warning fw-bolder
+                                        @else text-danger fw-bolder
+                                        @endif
+                                    ">
+                                        {{ ucfirst($ticket->priority) }}
+                                    </span>
+                                </td>
                                 <td class="py-2 px-4 border-b">{{ $ticket->category }}</td>
                                 <td class="py-2 px-4 border-b">{{ $ticket->created_at->format('d/m/Y') }}</td>
                                 <td class="py-2 px-4 border-b">
@@ -107,7 +166,6 @@
 
     <script>
         window.onload = function() {
-
             setTimeout(function() {
                 var successMessage = document.getElementById('success-message');
                 var errorMessage = document.getElementById('error-message');
@@ -122,11 +180,11 @@
         };
 
         function fadeOut(element) {
-            element.style.transition = "opacity 2s ease-out";
+            element.style.transition = "opacity 2s ease";
             element.style.opacity = 0;
             setTimeout(function() {
-                element.style.display = 'none';
-            }, 1300);
+                element.style.display = "none";
+            }, 2000);
         }
     </script>
 </x-app-layout>
