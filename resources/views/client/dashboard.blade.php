@@ -21,15 +21,23 @@
                     @if ($notifications->isEmpty())
                         <p class="text-gray-600">Aucune notification pour le moment.</p>
                     @else
-                        <ul>
-                            @foreach ($notifications as $notification)
-                                <li class="py-2 {{ $notification->read_at ? '' : 'font-bold' }}">
-                                    <a href="{{ route('notifications.read', $notification->id) }}" class="text-blue-600 hover:underline">
+                    <ul>
+                        @foreach ($notifications as $notification)
+                            <li class="py-2 {{ $notification->read_at ? '' : 'font-bold' }}">
+                                <!-- Lien vers l'action de lecture de la notification -->
+                                <form action="{{ route('notifications.read', $notification->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="text-blue-600 hover:underline {{ $notification->read_at ? '' : 'font-bold' }}">
+                                        @if(!$notification->read_at)
+                                            <i class="fas fa-bell text-yellow-500"></i>
+                                        @endif
                                         {{ $notification->data['message'] ?? 'Notification' }}
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
+                                    </button>
+                                </form>
+                                
+                            </li>
+                        @endforeach
+                    </ul>
 
                         <div class="mt-4">
                             {{ $notifications->links() }}

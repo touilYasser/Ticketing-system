@@ -17,7 +17,9 @@ class UserController extends Controller
         $tickets = Ticket::where('user_id', $userId);
     
         // Récupération des notifications non lues
-        $notifications = Auth::user()->unreadNotifications()->paginate(5);
+        /** @var \App\Models\User $authUser */
+        $authUser = Auth::user();
+        $notifications = $authUser->unreadNotifications()->paginate(5);
     
         // Calcul du nombre de tickets par statut
         $total = $tickets->count();

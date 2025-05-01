@@ -9,15 +9,14 @@ class NotificationController extends Controller
 {
     public function markAsRead($id)
 {
-    $notification = DatabaseNotification::findOrFail($id); // 🔥 récupère correctement
+    $notification = DatabaseNotification::findOrFail($id);
 
-    if ($notification->notifiable_id == Auth::id()) { // 🔥 sécurité : vérifier que c'est bien sa notification
+    if ($notification->notifiable_id == Auth::id()) {
         if (is_null($notification->read_at)) {
             $notification->markAsRead();
         }
 
-        $redirectUrl = $notification->data['url'] ?? '/dashboard';
-        return redirect($redirectUrl);
+        return back(); // 👈 Reviens sur la même page
     } else {
         abort(403, 'Non autorisé.');
     }

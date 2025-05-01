@@ -13,15 +13,22 @@
                 @if ($notifications->isEmpty())
                     <p class="text-gray-600">Aucune notification pour le moment.</p>
                 @else
-                    <ul>
-                        @foreach ($notifications as $notification)
-                            <li class="py-2 {{ $notification->read_at ? '' : 'font-bold' }}">
-                                <a href="{{ route('notifications.read', $notification->id) }}" class="text-blue-600 hover:underline">
+                <ul>
+                    @foreach ($notifications as $notification)
+                        <li class="py-2 {{ $notification->read_at ? '' : 'font-bold' }}">
+                            <!-- Lien vers l'action de lecture de la notification -->
+                            <form action="{{ route('notifications.read', $notification->id) }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="text-blue-600 hover:underline {{ $notification->read_at ? '' : 'font-bold' }}">
+                                    @if(!$notification->read_at)
+                                        <i class="fas fa-bell text-yellow-500"></i>
+                                    @endif
                                     {{ $notification->data['message'] ?? 'Notification' }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                                </button>
+                            </form>
+                        </li>
+                    @endforeach
+                </ul>
 
                     <!-- Ajouter la pagination si nécessaire -->
                     <div class="mt-4">
@@ -41,8 +48,11 @@
             <div class="bg-white p-6 rounded shadow mb-6">
                 <h3 class="text-lg font-semibold mb-4">Historique d'activité</h3>
                 <ul class="space-y-2">
-                    @foreach ($recentComments as $ticket)
-                        <li>💬 Vous avez commenté sur le Ticket #{{ $ticket->id }} il y a {{ $ticket->comments->first()->created_at->diffForHumans() }}</li>
+                    @foreach ($recentComments as $comment)
+                        <li>
+                            💬 Vous avez commenté sur le Ticket #{{ $comment->ticket->id }}
+                            il y a {{ $comment->created_at->diffForHumans() }}
+                        </li>
                     @endforeach
                     @foreach ($recentStatusChanges as $ticket)
                         <li>🎯 Le statut du Ticket #{{ $ticket->id }} a été modifié récemment à {{ ucfirst($ticket->status) }}.</li>

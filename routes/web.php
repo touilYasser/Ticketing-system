@@ -19,6 +19,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Notifications (accessible à tous les rôles authentifiés)
+Route::middleware('auth')->post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+
 // client routes
 Route::prefix('client')->middleware(['auth', 'userMiddleware'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('client.dashboard');
@@ -30,7 +33,6 @@ Route::prefix('client')->middleware(['auth', 'userMiddleware'])->group(function 
 
     Route::post('/tickets/{ticket}/comments', [TicketsController::class, 'addComment'])->name('client.tickets.addComment');
 
-    Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 });
 
 
@@ -55,17 +57,13 @@ Route::prefix('admin')->middleware(['auth', 'adminMiddleware'])->group(function 
 });
 
 
+// Agent routes
+Route::prefix('agent')->middleware(['auth', 'agentMiddleware'])->group(function () {
+    Route::get('/dashboard', [AgentController::class, 'index'])->name('agent.dashboard');
 
-// agent routes
-Route::middleware(['auth', 'agentMiddleware'])->group(function () {
-    Route::get('/agent/dashboard', [AgentController::class, 'index'])->name('agent.dashboard');
-
-    Route::get('/agent/tickets/{ticket}', [AgentController::class, 'show'])->name('agent.tickets.show');
-    Route::put('/agent/tickets/{ticket}', [AgentController::class, 'update'])->name('agent.tickets.update');
-    
-    Route::post('/agent/tickets/{ticket}/comment', [AgentController::class, 'comment'])->name('agent.tickets.comment');
-
-    Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::get('/tickets/{ticket}', [AgentController::class, 'show'])->name('agent.tickets.show');
+    Route::put('/tickets/{ticket}', [AgentController::class, 'update'])->name('agent.tickets.update');
+    Route::post('/tickets/{ticket}/comment', [AgentController::class, 'comment'])->name('agent.tickets.comment');
 });
 
 require __DIR__.'/auth.php';

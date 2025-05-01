@@ -34,13 +34,16 @@ class AgentController extends Controller
         ->paginate(10);
 
     // Notifications non lues pour l'utilisateur connecté
-    $notifications = Auth::user()->unreadNotifications()->paginate(5);
+    /** @var \App\Models\User $authUser */
+    $authUser = Auth::user();
+    $notifications = $authUser->unreadNotifications()->paginate(5);
 
     // Historique des actions récentes (les commentaires faits par l'agent connecté)
     $recentComments = Comment::where('user_id', Auth::id())
-        ->latest('created_at') // Trier par date de création des commentaires
-        ->take(5)
-        ->get();
+    ->with('ticket')
+    ->latest('created_at')
+    ->take(5)
+    ->get();
 
     // Nombre de tickets résolus aujourd'hui
     $todayResolvedTickets = Ticket::where('agent_id', Auth::id())
@@ -91,8 +94,7 @@ class AgentController extends Controller
     ]);
 
     if ($ticket->client) {
-        Log::info('Envoi de notification au client : ' . $ticket->client->email);
-        $ticket->client->notify(new TicketUpdated($ticket, 'Le statut de votre ticket ' . $ticket->id . ' a été changé à "' . ucfirst($validated['status']) . '".'));
+        $ticket->client->notify(new TicketUpdated($ticket, 'Le statut de votre ticket a été changé.'));
     } else {
         Log::error('Aucun client associé au ticket ID : ' . $ticket->id);
     }
@@ -100,26 +102,23 @@ class AgentController extends Controller
     return redirect()->route('agent.dashboard')->with('success', 'Ticket mis à jour avec succès.');
 }
 
-    public function comment(Request $request, $ticketId)
-    {
-        $request->validate([
-            'content' => 'required|string|max:1000',
-        ]);
+public function comment(Request $request, Ticket $ticket)
+{
+    $request->validate([
+        'content' => 'required|string|max:1000',
+    ]);
 
-        $ticket = Ticket::findOrFail($ticketId);
+    $ticket->comments()->create([
+        'user_id' => Auth::id(),
+        'content' => $request->content,
+    ]);
 
-        $ticket->comments()->create([
-            'user_id' => Auth::id(), // ID de l'agent connecté
-            'content' => $request->content,
-        ]);
-
-        if ($ticket->client) {
-            $ticket->client->notify(new TicketUpdated($ticket, 'Un agent a répondu à votre ticket.'));
-        }
-        
-
-        return redirect()->route('agent.tickets.show', $ticketId)->with('success', 'Commentaire ajouté avec succès.');
+    if ($ticket->client) {
+        $ticket->client->notify(new TicketUpdated($ticket, 'Un agent a répondu à votre ticket.'));
     }
+
+    return redirect()->route('agent.tickets.show', $ticket->id)->with('success', 'Commentaire ajouté avec succès.');
+}
 
 
 }
