@@ -23,12 +23,13 @@
                     
                     <!-- Affichage du titre uniquement sur la page 'welcome' quand non connecté -->
                     @guest
-                        @if(request()->routeIs('welcome'))
-                            <div class="text-xl font-semibold text-gray-800">
-                               {{ config('app.name', 'Laravel') }}
-                            </div>
-                        @endif
-                    @endguest
+                    @if(request()->routeIs('welcome') || request()->routeIs('register') || request()->routeIs('login'))
+                        <div class="text-xl font-semibold text-gray-800">
+                        {{ config('app.name', 'Laravel') }}
+                        </div>
+                    @endif
+                @endguest
+
                 </div>
 
                 <!-- Navigation Links -->
