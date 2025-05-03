@@ -1,70 +1,77 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
             {{ __('Détails du ticket') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <!-- Affichage des informations du ticket -->
+    <div class="py-12 bg-gray-100 min-h-screen">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white rounded-lg shadow p-6 space-y-6">
+
+                <!-- Informations principales -->
                 <div>
-                    <h3 class="text-2xl font-semibold">{{ $ticket->title }}</h3>
-                    <p>{{ $ticket->description }}</p>
-                    <p>
-                        <strong>Statut:</strong>
-                        <span class="
-                            @if ($ticket->status === 'ouvert') text-success
-                            @elseif ($ticket->status === 'en cours') text-warning
-                            @elseif ($ticket->status === 'fermé') text-danger
-                            @else text-gray-600 @endif
-                        ">
-                            {{ ucfirst($ticket->status) }}
-                        </span>
-                    </p>
+                    <h3 class="text-3xl font-semibold text-gray-800">{{ $ticket->title }}</h3>
+                    <p class="text-gray-700 mt-2">{{ $ticket->description }}</p>
                     
-                    <p>
-                        <strong>Priorité:</strong>
-                        <span class="
-                            @if ($ticket->priority === 'haute') text-danger
-                            @elseif ($ticket->priority === 'moyenne') text-warning
-                            @elseif ($ticket->priority === 'basse') text-primary
-                            @else text-gray-700 @endif
-                        ">
-                            {{ ucfirst($ticket->priority) }}
-                        </span>
-                    </p>
-                    
-                    <p><strong>Catégorie:</strong> {{ $ticket->category }}</p>
+                    <div class="mt-4 space-y-2">
+                        <p>
+                            <strong>Statut:</strong>
+                            @php
+                                $statusColors = [
+                                    'ouvert' => 'bg-blue-100 text-blue-700',
+                                    'en cours' => 'bg-yellow-100 text-yellow-700',
+                                    'resolu' => 'bg-green-100 text-green-700',
+                                    'ferme' => 'bg-red-100 text-red-700',
+                                ];
+                            @endphp
+                            <span class="inline-block px-2 py-1 rounded-full text-sm font-semibold {{ $statusColors[$ticket->status] ?? 'bg-gray-100 text-gray-700' }}">
+                                {{ ucfirst($ticket->status) }}
+                            </span>
+                        </p>
+                        <p>
+                            <strong>Priorité:</strong>
+                            @php
+                                $priorityColors = [
+                                    'haute' => 'bg-red-100 text-red-700',
+                                    'moyenne' => 'bg-yellow-100 text-yellow-700',
+                                    'basse' => 'bg-blue-100 text-blue-700',
+                                ];
+                            @endphp
+                            <span class="inline-block px-2 py-1 rounded-full text-sm font-semibold {{ $priorityColors[$ticket->priority] ?? 'bg-gray-100 text-gray-700' }}">
+                                {{ ucfirst($ticket->priority) }}
+                            </span>
+                        </p>
+                        <p><strong>Catégorie:</strong> {{ $ticket->category }}</p>
+                    </div>
                 </div>
 
-                <!-- Affichage de la date d'échéance -->
-                <div class="mt-4 flex items-center">
-                    <h4 class="font-medium mr-2">Date d'échéance:</h4>
+                <!-- Date d'échéance -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-800 mb-2">Date d'échéance</h4>
                     @if ($ticket->due_date)
-                        <span class="text-danger fw-bold">{{ $ticket->due_date }}</span>
+                        <span class="text-red-600 font-semibold">{{ $ticket->due_date }}</span>
                     @else
-                        <span>Aucune date d'échéance définie.</span>
+                        <span class="text-gray-500">Aucune date d'échéance définie.</span>
                     @endif
                 </div>
 
                 <!-- Agent assigné -->
-                <div class="mt-4">
-                    <h4 class="font-medium">Agent assigné:</h4>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-800 mb-2">Agent assigné</h4>
                     @if ($ticket->agent)
-                        <p>{{ $ticket->agent->name }}</p>
+                        <p class="text-gray-700">{{ $ticket->agent->name }}</p>
                     @else
-                        <p>Aucun agent assigné.</p>
+                        <p class="text-gray-500">Aucun agent assigné.</p>
                     @endif
                 </div>
 
-                <!-- Formulaire pour assigner un agent -->
-                <div class="mt-6">
-                    <h4 class="font-medium">Assigner un agent</h4>
-                    <form action="{{ route('admin.tickets.assignAgent', $ticket->id) }}" method="POST">
+                <!-- Formulaire assignation -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-medium text-gray-800 mb-2">Assigner un agent</h4>
+                    <form action="{{ route('admin.tickets.assignAgent', $ticket->id) }}" method="POST" class="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-2 sm:space-y-0">
                         @csrf
-                        <select name="agent_id" class="form-select mt-1 block w-full">
+                        <select name="agent_id" class="border-gray-300 rounded px-3 py-2 w-full sm:w-auto">
                             <option value="">Sélectionner un agent</option>
                             @foreach ($agents as $agent)
                                 <option value="{{ $agent->id }}" {{ $ticket->agent_id == $agent->id ? 'selected' : '' }}>
@@ -72,24 +79,34 @@
                                 </option>
                             @endforeach
                         </select>
-                        <button type="submit" class="bg-blue-500 text-white mt-4 px-4 py-2 rounded">Assigner</button>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                            Assigner
+                        </button>
                     </form>
                 </div>
 
-                <!-- Commentaires et pièces jointes -->
-                <div class="mt-6">
-                    <h4 class="font-medium">Commentaires</h4>
-                    <ul>
-                        @foreach ($ticket->comments as $comment)
-                            <li>{{ $comment->user->name }}: {{ $comment->content }}</li>
-                        @endforeach
+                <!-- Commentaires -->
+                <div>
+                    <h4 class="font-medium text-gray-800 mb-2">Commentaires</h4>
+                    <ul class="space-y-2">
+                        @forelse ($ticket->comments as $comment)
+                            <li class="bg-gray-100 p-3 rounded shadow-sm">
+                                <span class="font-semibold text-gray-700">{{ $comment->user->name }}:</span>
+                                <span class="text-gray-600">{{ $comment->content }}</span>
+                            </li>
+                        @empty
+                            <li class="text-gray-500">Aucun commentaire.</li>
+                        @endforelse
                     </ul>
+                </div>
 
-                    <h4 class="mt-4 font-medium">Pièces jointes</h4>
+                <!-- Pièces jointes -->
+                <div>
+                    <h4 class="font-medium text-gray-800 mb-2">Pièces jointes</h4>
                     <ul class="list-disc list-inside space-y-1 text-blue-600">
                         @forelse ($ticket->attachments as $attachment)
                             <li>
-                                <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank" class="hover:underline">
+                                <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank" class="hover:underline transition">
                                     {{ basename($attachment->file_path) }}
                                 </a>
                             </li>
@@ -99,17 +116,20 @@
                     </ul>
                 </div>
 
-                <div class="mt-2 flex space-x-4">
-                    <!-- Bouton pour supprimer le ticket -->
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0">
                     <form action="{{ route('admin.tickets.destroy', $ticket->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700">Supprimer le ticket</button>
+                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition shadow">
+                            Supprimer le ticket
+                        </button>
                     </form>
-                
-                    <!-- Lien pour modifier le ticket -->
-                    <a href="{{ route('admin.tickets.edit', $ticket->id) }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Modifier ce ticket</a>
+                    <a href="{{ route('admin.tickets.edit', $ticket->id) }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition shadow text-center">
+                        Modifier ce ticket
+                    </a>
                 </div>
+
             </div>
         </div>
     </div>

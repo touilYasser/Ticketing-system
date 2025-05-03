@@ -6,100 +6,91 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <div class="space-y-4">
-                    <!-- Titre du ticket -->
-                    <div>
-                        <h3 class="text-2xl font-semibold">{{ $ticket->title }}</h3>
-                        <p class="text-gray-600">{{ $ticket->description }}</p>
-                    </div>
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow sm:rounded-lg p-6 space-y-6 transition duration-300 ease-in-out hover:scale-105">
 
-                    <!-- Statut du ticket -->
-                    <div class="flex items-center space-x-4">
-                        <h4 class="font-medium w-24">Statut :</h4>
-                        <p class="
-                            @if ($ticket->status == 'ouvert') 
-                                text-primary fw-bold 
-                            @elseif ($ticket->status == 'en_cours') 
-                                text-warning fw-bold 
-                            @elseif ($ticket->status == 'resolu') 
-                                text-success fw-bold 
-                            @else 
-                                text-danger fw-bold 
-                            @endif
-                        ">
+                <!-- Titre et description -->
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ $ticket->title }}</h3>
+                    <p class="text-gray-600">{{ $ticket->description }}</p>
+                </div>
+
+                <!-- Statut, Priorité, Catégorie -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    @php
+                        $statusBg = [
+                            'ouvert' => 'bg-blue-100 text-blue-700',
+                            'en_cours' => 'bg-yellow-100 text-yellow-700',
+                            'resolu' => 'bg-green-100 text-green-700',
+                            'ferme' => 'bg-red-100 text-red-700',
+                        ];
+                        $priorityBg = [
+                            'basse' => 'bg-green-100 text-green-700',
+                            'moyenne' => 'bg-yellow-100 text-yellow-700',
+                            'haute' => 'bg-red-100 text-red-700',
+                        ];
+                    @endphp
+
+                    <div class="transition duration-300 hover:scale-105">
+                        <span class="block text-sm font-medium text-gray-500">Statut</span>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-sm font-semibold {{ $statusBg[$ticket->status] ?? 'bg-gray-100 text-gray-700' }}">
                             {{ ucfirst($ticket->status) }}
-                        </p>
+                        </span>
                     </div>
 
-                    <!-- Priorité du ticket -->
-                    <div class="flex items-center space-x-4">
-                        <h4 class="font-medium w-24">Priorité :</h4>
-                        <p class="
-                            @if ($ticket->priority == 'basse') 
-                                text-success fw-bold 
-                            @elseif ($ticket->priority == 'moyenne') 
-                                text-warning fw-bold 
-                            @else 
-                                text-danger fw-bold 
-                            @endif
-                        ">
+                    <div class="transition duration-300 hover:scale-105">
+                        <span class="block text-sm font-medium text-gray-500">Priorité</span>
+                        <span class="inline-flex items-center px-2 py-1 rounded-full text-sm font-semibold {{ $priorityBg[$ticket->priority] ?? 'bg-gray-100 text-gray-700' }}">
                             {{ ucfirst($ticket->priority) }}
-                        </p>
+                        </span>
                     </div>
 
-                    <!-- Catégorie du ticket -->
-                    <div class="flex items-center space-x-4">
-                        <h4 class="font-medium w-24">Catégorie :</h4>
-                        <p>{{ $ticket->category }}</p>
-                    </div>
 
-                    <!-- agent assigne -->
-                    <div class="flex items-center space-x-4">
-                        <h4 class="font-medium">Agent assigné :</h4>
-                        <p>
-                            @if ($ticket->agent)
-                                {{ $ticket->agent->name }}
-                            @else
-                                <span class="text-gray-500 italic">Aucun agent assigné</span>
-                            @endif
-                        </p>
+                    <div class="transition duration-300 hover:scale-105">
+                        <span class="block text-sm font-medium text-gray-500">Catégorie</span>
+                        <span class="text-gray-800">{{ ucfirst($ticket->category) }}</span>
                     </div>
+                </div>
 
-                    <!-- Pièces jointes -->
+                <!-- Agent assigné -->
+                <div>
+                    <span class="block text-sm font-medium text-gray-500">Agent assigné</span>
+                    @if ($ticket->agent)
+                        <span class="text-gray-800">{{ $ticket->agent->name }}</span>
+                    @else
+                        <span class="italic text-gray-400">Aucun agent assigné</span>
+                    @endif
+                </div>
+
+                <!-- Pièces jointes -->
+                <div class="transition duration-300 hover:translate-x-1">
+                    <span class="block text-sm font-medium text-gray-500">Pièces jointes</span>
                     @if ($ticket->attachments->count())
-                    <div>
-                        <h4 class="font-medium">Pièces jointes :</h4>
-                        <ul class="list-disc list-inside text-blue-600 space-y-1">
+                        <ul class="mt-2 space-y-1">
                             @foreach ($ticket->attachments as $attachment)
                                 <li>
-                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" 
-                                    target="_blank" 
-                                    class="hover:underline" 
-                                    download>
-                                        📄 Télécharger {{ basename($attachment->file_path) }}
+                                    <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank" download aria-label="Télécharger {{ basename($attachment->file_path) }}" class="inline-flex items-center text-indigo-600 hover:underline transition duration-300">
+                                        <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                        </svg>
+                                        Télécharger {{ basename($attachment->file_path) }}
                                     </a>
                                 </li>
                             @endforeach
                         </ul>
-                    </div>
                     @else
-                    <div>
-                        <h4 class="font-medium">Pièces jointes :</h4>
                         <p class="text-gray-500">Aucune pièce jointe disponible.</p>
-                    </div>
                     @endif
+                </div>
 
-                    
-
-                    <!-- Commentaires et ajout -->
-                    <div>
-                        <h4 class="font-medium">Commentaires :</h4>
+                <!-- Commentaires -->
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Commentaires</h4>
+                    @if($ticket->comments->count())
                         <ul class="space-y-4">
                             @foreach ($ticket->comments as $comment)
-                                <li class="flex items-start bg-gray-50 border border-gray-200 rounded-xl p-4">
-                                    <div class="flex-shrink-0 w-10 h-10 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-lg">
+                                <li class="flex items-start bg-gray-50 border border-gray-200 rounded-xl p-4 transition duration-300 hover:shadow hover:translate-y-1">
+                                    <div class="flex-shrink-0 w-10 h-10 bg-indigo-100 text-indigo-700 rounded-full flex items-center justify-center font-bold text-lg">
                                         {{ strtoupper(substr($comment->user->name, 0, 1)) }}
                                     </div>
                                     <div class="ml-4 w-full">
@@ -114,20 +105,23 @@
                                 </li>
                             @endforeach
                         </ul>
-                    </div>
-                        
-
-                        <!-- Formulaire pour ajouter un commentaire -->
-                        <form method="POST" action="{{ route('client.tickets.addComment', $ticket->id) }}">
-                            @csrf
-                            <div class="mt-4">
-                                <textarea name="content" class="w-full border rounded p-2" rows="4" placeholder="Ajoutez un commentaire..."></textarea>
-                            </div>
-                            <div class="mt-4">
-                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Ajouter un commentaire</button>
-                            </div>
-                        </form>
+                    @else
+                        <p class="text-gray-500">Aucun commentaire pour l'instant.</p>
+                    @endif
                 </div>
+
+                <!-- Ajouter un commentaire -->
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Ajouter un commentaire</h4>
+                    <form method="POST" action="{{ route('client.tickets.addComment', $ticket->id) }}">
+                        @csrf
+                        <textarea name="content" required class="w-full border rounded p-2 mb-2 focus:ring focus:ring-indigo-300 transition duration-300" rows="4" placeholder="Écrivez votre commentaire..."></textarea>
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded shadow transition duration-300 hover:scale-105">
+                            Poster le commentaire
+                        </button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>

@@ -1,36 +1,34 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
             {{ __('Agent Dashboard') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-gray-100 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Notifications -->
-            <div class="bg-white p-6 rounded shadow mb-3">
+            <div class="bg-white p-6 rounded-lg shadow-lg mb-4 transition-transform transform hover:scale-105 duration-300 ease-in-out">
                 <h3 class="text-lg font-semibold mb-4">Notifications</h3>
                 @if ($notifications->isEmpty())
                     <p class="text-gray-600">Aucune notification pour le moment.</p>
                 @else
-                <ul>
-                    @foreach ($notifications as $notification)
-                        <li class="py-2 {{ $notification->read_at ? '' : 'font-bold' }}">
-                            <!-- Lien vers l'action de lecture de la notification -->
-                            <form action="{{ route('notifications.read', $notification->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                <button type="submit" class="text-blue-600 hover:underline {{ $notification->read_at ? '' : 'font-bold' }}">
-                                    @if(!$notification->read_at)
-                                        <i class="fas fa-bell text-yellow-500"></i>
-                                    @endif
-                                    {{ $notification->data['message'] ?? 'Notification' }}
-                                </button>
-                            </form>
-                        </li>
-                    @endforeach
-                </ul>
-
-                    <!-- Ajouter la pagination si nécessaire -->
+                    <ul>
+                        @foreach ($notifications as $notification)
+                            <li class="py-2 {{ $notification->read_at ? '' : 'font-semibold text-blue-600' }}">
+                                <form action="{{ route('notifications.read', $notification->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="text-blue-600 hover:text-blue-800 hover:underline transition duration-300 {{ $notification->read_at ? '' : 'font-bold' }}">
+                                        @if(!$notification->read_at)
+                                            <i class="fas fa-bell text-yellow-500"></i>
+                                        @endif
+                                        {{ $notification->data['message'] ?? 'Notification' }}
+                                    </button>
+                                </form>
+                            </li>
+                        @endforeach
+                    </ul>
+                    <!-- Pagination -->
                     <div class="mt-4">
                         {{ $notifications->links() }}
                     </div>
@@ -39,35 +37,37 @@
 
             <!-- Badge de Performance -->
             @if ($todayResolvedTickets >= 5)
-                <div class="bg-green-100 text-green-800 p-4 rounded shadow mb-6">
+                <div class="bg-green-100 text-green-800 p-4 rounded-lg shadow-lg mb-6 animate__animated animate__fadeIn">
                     🏆 Bravo ! Vous avez résolu {{ $todayResolvedTickets }} tickets aujourd'hui !
                 </div>
             @endif
 
             <!-- Historique d’activité -->
-            <div class="bg-white p-6 rounded shadow mb-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
                 <h3 class="text-lg font-semibold mb-4">Historique d'activité</h3>
                 <ul class="space-y-2">
                     @foreach ($recentComments as $comment)
-                        <li>
-                            💬 Vous avez commenté sur le Ticket #{{ $comment->ticket->id }}
-                            il y a {{ $comment->created_at->diffForHumans() }}
+                        <li class="transition-all duration-300 hover:bg-gray-50 p-2 rounded-md">
+                            💬 Vous avez commenté sur le Ticket #{{ $comment->ticket->id }} il y a {{ $comment->created_at->diffForHumans() }}
                         </li>
                     @endforeach
                     @foreach ($recentStatusChanges as $ticket)
-                        <li>🎯 Le statut du Ticket #{{ $ticket->id }} a été modifié récemment à {{ ucfirst($ticket->status) }}.</li>
+                        <li class="transition-all duration-300 hover:bg-gray-50 p-2 rounded-md">
+                            🎯 Le statut du Ticket #{{ $ticket->id }} a été modifié récemment à {{ ucfirst($ticket->status) }}.
+                        </li>
                     @endforeach
                 </ul>
             </div>
 
             <!-- Prochaines Échéances -->
-            <div class="bg-white p-6 rounded shadow mb-6">
+            <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
                 <h3 class="text-lg font-semibold mb-4">Prochaines échéances</h3>
                 <ul class="space-y-2">
                     @foreach ($upcomingDeadlines as $ticket)
-                        <li>📅 Ticket #{{ $ticket->id }} - 
+                        <li class="transition-all duration-300 hover:bg-gray-50 p-2 rounded-md">
+                            📅 Ticket #{{ $ticket->id }} - 
                             @if ($ticket->due_date)
-                                À rendre pour <span class="text-danger fw-bold">{{ $ticket->due_date }}</span>
+                                À rendre pour <span class="font-bold text-red-600">{{ $ticket->due_date }}</span>
                             @else
                                 Date d'échéance non définie
                             @endif
@@ -76,14 +76,14 @@
                 </ul>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+            <div class="bg-white p-6 rounded-lg shadow-xl mb-4">
                 @if (session('success'))
-                    <div id="success-message" class="message bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    <div id="success-message" class="message bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 opacity-0 transition-opacity duration-500 ease-out">
                         <strong class="font-bold">Succès!</strong>
                         <span>{{ session('success') }}</span>
                     </div>
                 @elseif (session('error'))
-                    <div id="error-message" class="message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <div id="error-message" class="message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 opacity-0 transition-opacity duration-500 ease-out">
                         <strong class="font-bold">Erreur!</strong>
                         <span>{{ session('error') }}</span>
                     </div>
@@ -113,7 +113,7 @@
                         </div>
 
                         <div>
-                            <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">Filtrer</button>
+                            <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out">Filtrer</button>
                         </div>
                     </div>
                 </form>
@@ -122,44 +122,47 @@
                 <table class="min-w-full bg-white border border-gray-200">
                     <thead>
                         <tr>
-                            <th class="py-2 px-4 border-b text-left">Titre</th>
-                            <th class="py-2 px-4 border-b text-left">Statut</th>
-                            <th class="py-2 px-4 border-b text-left">Priorité</th>
-                            <th class="py-2 px-4 border-b text-left">Categorie</th>
-                            <th class="py-2 px-4 border-b text-left">Date de création</th>
-                            <th class="py-2 px-4 border-b text-left">Actions</th>
+                            <th class="py-3 px-4 border-b text-left">Titre</th>
+                            <th class="py-3 px-4 border-b text-left">Statut</th>
+                            <th class="py-3 px-4 border-b text-left">Priorité</th>
+                            <th class="py-3 px-4 border-b text-left">Categorie</th>
+                            <th class="py-3 px-4 border-b text-left">Date de création</th>
+                            <th class="py-3 px-4 border-b text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($tickets as $ticket)
-                            <tr>
+                            <tr class="transition-all duration-300 hover:bg-gray-50">
                                 <td class="py-2 px-4 border-b">{{ $ticket->title }}</td>
                                 <td class="px-4 py-2 border-b">
-                                    <span class="
-                                        @if ($ticket->status == 'ouvert') text-primary fw-bolder
-                                        @elseif ($ticket->status == 'en_cours') text-warning fw-bolder
-                                        @elseif ($ticket->status == 'resolu') text-success fw-bolder
-                                        @else text-danger fw-bolder
-                                        @endif
-                                    ">
+                                    @php
+                                        $statusBg = [
+                                            'ouvert' => 'bg-blue-100 text-blue-700',
+                                            'en_cours' => 'bg-yellow-100 text-yellow-700',
+                                            'resolu' => 'bg-green-100 text-green-700',
+                                            'ferme' => 'bg-red-100 text-red-700',
+                                        ];
+                                        $priorityBg = [
+                                            'basse' => 'bg-green-100 text-green-700',
+                                            'moyenne' => 'bg-yellow-100 text-yellow-700',
+                                            'haute' => 'bg-red-100 text-red-700',
+                                        ];
+                                    @endphp
+                                
+                                    <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold {{ $statusBg[$ticket->status] ?? 'bg-gray-100 text-gray-700' }}">
                                         {{ ucfirst($ticket->status) }}
                                     </span>
                                 </td>
-                    
+                                
                                 <td class="px-4 py-2 border-b">
-                                    <span class="
-                                        @if ($ticket->priority == 'basse') text-success fw-bolder
-                                        @elseif ($ticket->priority == 'moyenne') text-warning fw-bolder
-                                        @else text-danger fw-bolder
-                                        @endif
-                                    ">
+                                    <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold {{ $priorityBg[$ticket->priority] ?? 'bg-gray-100 text-gray-700' }}">
                                         {{ ucfirst($ticket->priority) }}
                                     </span>
                                 </td>
                                 <td class="py-2 px-4 border-b">{{ $ticket->category }}</td>
                                 <td class="py-2 px-4 border-b">{{ $ticket->created_at->format('d/m/Y') }}</td>
                                 <td class="py-2 px-4 border-b">
-                                    <a href="{{ route('agent.tickets.show', $ticket->id) }}" class="text-blue-600 hover:text-blue-800">Voir</a>
+                                    <a href="{{ route('agent.tickets.show', $ticket->id) }}" class="text-blue-600 hover:text-blue-800 transition duration-300 fw-bold">Voir</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -181,20 +184,17 @@
                 var errorMessage = document.getElementById('error-message');
                 
                 if (successMessage) {
-                    fadeOut(successMessage);
+                    fadeIn(successMessage);
                 }
                 if (errorMessage) {
-                    fadeOut(errorMessage);
+                    fadeIn(errorMessage);
                 }
-            }, 1300); 
+            }, 300); 
         };
 
-        function fadeOut(element) {
-            element.style.transition = "opacity 2s ease";
-            element.style.opacity = 0;
-            setTimeout(function() {
-                element.style.display = "none";
-            }, 2000);
+        function fadeIn(element) {
+            element.classList.remove('opacity-0');
+            element.classList.add('opacity-100');
         }
     </script>
 </x-app-layout>

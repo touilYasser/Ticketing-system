@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="container mx-auto py-10">
         <!-- Titre principal -->
-        <h2 class="text-center text-4xl font-extrabold mb-6 text-gray-800 animate-fadeInUp">Bienvenue sur Helpdesk Support</h2>
+        <h2 class="text-center text-4xl font-extrabold mb-6 text-gray-800 animate-fadeInUp">Bienvenue sur Cipher Pol Support</h2>
         <p class="text-center text-lg text-gray-600 mb-10 animate-fadeInUp delay-200">
             Déclarez, suivez et résolvez vos incidents rapidement et efficacement grâce à notre plateforme intuitive.
         </p>
@@ -20,7 +20,7 @@
             </div>
 
             <!-- Espace Agents -->
-            <div class="bg-gradient-to-br from-green-50 to-green-100 border border-white/30 p-8 rounded-2xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl animate-fadeInUp delay-200">
+            <div class="bg-gradient-to-br from-green-50 to-green-100 border border-white/30 p-8 rounded-2xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl animate-fadeInUp">
                 <h3 class="text-2xl font-semibold text-green-700 mb-4">Espace Agents</h3>
                 <p class="text-gray-700 mb-6">
                     En tant qu'agent, accédez facilement aux tickets qui vous sont assignés, échangez directement avec les clients, ajoutez des commentaires, et clôturez les incidents rapidement.
@@ -31,7 +31,7 @@
             </div>
 
             <!-- Espace Administrateur -->
-            <div class="bg-gradient-to-br from-red-50 to-red-100 border-white/30 p-8 rounded-2xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl animate-fadeInUp delay-400">
+            <div class="bg-gradient-to-br from-red-50 to-red-100 border-white/30 p-8 rounded-2xl shadow-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl animate-fadeInUp">
                 <h3 class="text-2xl font-semibold text-red-700 mb-4">Espace Administrateur</h3>
                 <p class="text-gray-700 mb-6">
                     Supervisez toute l'activité de la plateforme : gérez les utilisateurs, assignez les rôles et agents aux tickets, consultez les statistiques et surveillez les délais de traitement.
