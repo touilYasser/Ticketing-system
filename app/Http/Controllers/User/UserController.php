@@ -13,10 +13,8 @@ class UserController extends Controller
     public function dashboard() {
         $userId = Auth::id();
     
-        // Récupération des tickets pour cet utilisateur
         $tickets = Ticket::where('user_id', $userId);
     
-        // Récupération des notifications non lues
         /** @var \App\Models\User $authUser */
         $authUser = Auth::user();
         $notifications = $authUser->unreadNotifications()->paginate(5);
@@ -27,14 +25,9 @@ class UserController extends Controller
         $resolved = (clone $tickets)->where('status', 'resolu')->count();
         $inProgress = (clone $tickets)->where('status', 'en_cours')->count();
         $close = (clone $tickets)->where('status', 'ferme')->count();
-    
-        // Vérification des valeurs dans les logs (pour le débogage)
-        Log::info("Dashboard data for user $userId - Total: $total, Resolved: $resolved, InProgress: $inProgress, Close: $close");
-    
-        // Récupération des derniers tickets créés
+
         $latestTickets = (clone $tickets)->orderByDesc('created_at')->take(5)->get();
     
-        // Retourner les données à la vue
         return view('client.dashboard', [
             'total' => $total,
             'opened' => $opened,

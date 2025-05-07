@@ -16,7 +16,7 @@ class NotificationController extends Controller
             $notification->markAsRead();
         }
 
-        return back(); // 👈 Reviens sur la même page
+        return back();
     } else {
         abort(403, 'Non autorisé.');
     }

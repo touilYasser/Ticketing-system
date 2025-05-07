@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="flex justify-between items-center animate__animated animate__fadeInDown">
             <h2 class="font-extrabold text-2xl text-indigo-700 leading-tight flex items-center">
-                <i class="fas fa-user-circle mr-2"></i> {{ __('Espace Client') }}
+                <i class="fas fa-user-circle mr-2"></i> {{ __('Client Dashboard') }}
             </h2>
-            <a href="{{ route('client.tickets.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded-full shadow hover:bg-indigo-700 transition duration-300 animate__animated animate__bounceIn">
-                <i class="fas fa-plus mr-1"></i> Nouveau Ticket
+            <a href="{{ route('client.tickets.create') }}" class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-full shadow hover:bg-indigo-700 transition duration-300 animate__animated animate__bounceIn">
+                + Nouveau Ticket
             </a>
         </div>
     </x-slot>
@@ -147,6 +147,7 @@
 
     @vite(['resources/js/app.js'])
 
+    
     <!-- Données JS -->
     <script>
         window.opened = {{ $opened }};
@@ -189,5 +190,4 @@
             }
         });
     </script>
-
 </x-app-layout>

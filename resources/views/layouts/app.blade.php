@@ -34,5 +34,15 @@
         </div>
 
         <x-footer />
+
+
+        {{-- <script>
+            window.Laravel = @json([
+                'userId' => auth()->id(),
+                'userRole' => auth()->user()->role,
+            ]);
+        </script> --}}
+
     </body>
+
 </html>

@@ -36,9 +36,9 @@
             </div>
 
             <!-- Badge de Performance -->
-            @if ($todayResolvedTickets >= 5)
+            @if ($todayResolvedTickets)
                 <div class="bg-green-100 text-green-800 p-4 rounded-lg shadow-lg mb-6 animate__animated animate__fadeIn">
-                    🏆 Bravo ! Vous avez résolu {{ $todayResolvedTickets }} tickets aujourd'hui !
+                    🏆 Bravo ! Vous avez résolu {{ $todayResolvedTickets }} tickets !
                 </div>
             @endif
 
@@ -78,14 +78,14 @@
 
             <div class="bg-white p-6 rounded-lg shadow-xl mb-4">
                 @if (session('success'))
-                    <div id="success-message" class="message bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 opacity-0 transition-opacity duration-500 ease-out">
-                        <strong class="font-bold">Succès!</strong>
-                        <span>{{ session('success') }}</span>
+                    <div id="success-message" class="flex items-center gap-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 animate-slide-down">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span><strong>Succès :</strong> {{ session('success') }}</span>
                     </div>
                 @elseif (session('error'))
-                    <div id="error-message" class="message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 opacity-0 transition-opacity duration-500 ease-out">
-                        <strong class="font-bold">Erreur!</strong>
-                        <span>{{ session('error') }}</span>
+                    <div id="error-message" class="flex items-center gap-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 animate-slide-down">
+                        <i class="fas fa-times-circle text-red-500"></i>
+                        <span><strong>Erreur :</strong> {{ session('error') }}</span>
                     </div>
                 @endif
 
@@ -178,23 +178,17 @@
     </div>
 
     <script>
-        window.onload = function() {
+         window.onload = function() {
             setTimeout(function() {
-                var successMessage = document.getElementById('success-message');
-                var errorMessage = document.getElementById('error-message');
-                
-                if (successMessage) {
-                    fadeIn(successMessage);
-                }
-                if (errorMessage) {
-                    fadeIn(errorMessage);
-                }
-            }, 300); 
+                ['success-message', 'error-message'].forEach(function(id) {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.style.transition = "opacity 2s";
+                        el.style.opacity = 0;
+                        setTimeout(() => el.style.display = 'none', 2000);
+                    }
+                });
+            }, 2000);
         };
-
-        function fadeIn(element) {
-            element.classList.remove('opacity-0');
-            element.classList.add('opacity-100');
-        }
     </script>
 </x-app-layout>

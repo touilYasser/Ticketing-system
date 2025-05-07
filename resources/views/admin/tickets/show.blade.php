@@ -9,6 +9,18 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white rounded-lg shadow p-6 space-y-6">
 
+                @if (session('success'))
+                    <div id="success-message" class="flex items-center gap-2 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 animate-slide-down">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span><strong>Succès :</strong> {{ session('success') }}</span>
+                    </div>
+                @elseif (session('error'))
+                    <div id="error-message" class="flex items-center gap-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4 animate-slide-down">
+                        <i class="fas fa-times-circle text-red-500"></i>
+                        <span><strong>Erreur :</strong> {{ session('error') }}</span>
+                    </div>
+                @endif
+
                 <!-- Informations principales -->
                 <div>
                     <h3 class="text-3xl font-semibold text-gray-800">{{ $ticket->title }}</h3>
@@ -133,4 +145,18 @@
             </div>
         </div>
     </div>
+    <script>
+        window.onload = function() {
+           setTimeout(function() {
+               ['success-message', 'error-message'].forEach(function(id) {
+                   const el = document.getElementById(id);
+                   if (el) {
+                       el.style.transition = "opacity 2s";
+                       el.style.opacity = 0;
+                       setTimeout(() => el.style.display = 'none', 2000);
+                   }
+               });
+           }, 2000);
+       };
+   </script>
 </x-app-layout>
