@@ -70,6 +70,7 @@ class TicketsController extends Controller
         return view('client.tickets.show', compact('ticket'));
     }
 
+
     public function addComment(Request $request, $ticketId)
     {
         $request->validate([
@@ -85,5 +86,28 @@ class TicketsController extends Controller
         ]);
 
         return redirect()->route('client.tickets.show', $ticket->id)->with('success', 'Commentaire ajouté avec succès!');
+    }
+
+    public function edit(Ticket $ticket)
+    {
+        return view('client.tickets.edit', compact('ticket'));
+    }
+
+    public function update(Request $request, Ticket $ticket){
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+    ]);
+
+    $ticket->update($validated);
+
+    return redirect()->route('client.tickets.show', $ticket->id)->with('success', 'Ticket mis à jour avec succès!');
+}
+
+    public function destroy(Ticket $ticket)
+    {
+        $ticket->delete();
+
+        return redirect()->route('client.tickets.index')->with('success', 'Ticket supprimé avec succès!');
     }
 }

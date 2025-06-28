@@ -30,6 +30,9 @@ Route::prefix('client')->middleware(['auth', 'userMiddleware'])->group(function 
     Route::get('/tickets/create', [TicketsController::class, 'create'])->name('client.tickets.create');
     Route::post('/tickets', [TicketsController::class, 'store'])->name('client.tickets.store');
     Route::get('/tickets/{ticket}', [TicketsController::class, 'show'])->name('client.tickets.show');
+    Route::get('/tickets/{ticket}/edit', [TicketsController::class, 'edit'])->name('client.tickets.edit');
+    Route::put('/tickets/{ticket}', [TicketsController::class, 'update'])->name('client.tickets.update');
+    Route::delete('/tickets/{ticket}', [TicketsController::class, 'destroy'])->name('client.tickets.destroy');
 
     Route::post('/tickets/{ticket}/comments', [TicketsController::class, 'addComment'])->name('client.tickets.addComment');
 

@@ -128,9 +128,20 @@
                     <form method="POST" action="{{ route('client.tickets.addComment', $ticket->id) }}">
                         @csrf
                         <textarea name="content" required class="w-full border rounded p-2 mb-2 focus:ring focus:ring-indigo-300 transition duration-300" rows="4" placeholder="Écrivez votre commentaire..."></textarea>
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded shadow transition duration-300 hover:scale-105">
-                            Poster le commentaire
-                        </button>
+                        <div class="flex justify-between items-center mt-4 gap-2">
+    <div class="flex gap-2">
+        <a href="{{ route('client.tickets.edit', $ticket->id) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded shadow transition duration-300">Modifier</a>
+        <button type="button" onclick="if(confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?')) document.getElementById('delete-ticket-form').submit();" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow transition duration-300">Supprimer</button>
+    </div>
+    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded shadow transition duration-300 hover:scale-105">
+        Poster le commentaire
+    </button>
+</div>
+</form>
+<form id="delete-ticket-form" action="{{ route('client.tickets.destroy', $ticket->id) }}" method="POST" style="display:none">
+    @csrf
+    @method('DELETE')
+</form>
                     </form>
                 </div>
 
