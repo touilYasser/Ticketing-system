@@ -1,19 +1,117 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Ticketing System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Application de gestion de tickets d’assistance développée avec Laravel.
 
-## About Laravel
+## Présentation
+Cette application permet de gérer les demandes de support (tickets) au sein d’une organisation. Elle offre une interface pour la création, le suivi et la résolution des tickets par les utilisateurs, agents et administrateurs.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fonctionnalités principales
+- Création de tickets par les utilisateurs
+- Attribution des tickets aux agents
+- Suivi de l’état des tickets (ouvert, en cours, résolu, fermé)
+- Notifications (mail, in-app)
+- Tableau de bord pour clients, agents et administrateurs
+- Historique et commentaires sur chaque ticket
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+## Prérequis
+- PHP >= 8.2
+- Composer
+- Node.js & npm
+- (Optionnel) SQLite ou MySQL
+
+## Dépendances principales
+- Laravel 12
+- Laravel Breeze (authentification)
+- Laravel Reverb (temps réel)
+- Bootstrap, TailwindCSS, Chart.js, AlpineJS, FontAwesome, Laravel Echo, Pusher-js
+
+## Installation & Configuration
+1. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/votre-utilisateur/Ticketing-System.git
+   cd ticketing-system
+   ```
+2. Installez les dépendances :
+   ```bash
+   composer install
+   npm install
+   ```
+3. Copiez le fichier `.env.example` en `.env` et configurez vos variables :
+   ```bash
+   cp .env.example .env
+   ```
+4. Générez la clé d’application :
+   ```bash
+   php artisan key:generate
+   ```
+5. Configurez la base de données dans `.env` (exemple SQLite) :
+   ```env
+   DB_CONNECTION=sqlite
+   # DB_DATABASE=database/database.sqlite
+   ```
+   Puis lancez les migrations :
+   ```bash
+   php artisan migrate --seed
+   ```
+6. Compilez les assets front :
+   ```bash
+   npm run dev
+   ```
+7. Lancez le serveur :
+   ```bash
+   php artisan serve
+   ```
+
+## Exemple de configuration .env
+```env
+APP_NAME=TicketingSystem
+APP_ENV=local
+APP_KEY= # généré par artisan key:generate
+APP_DEBUG=true
+APP_URL=http://localhost
+
+DB_CONNECTION=sqlite
+# DB_DATABASE=database/database.sqlite
+
+MAIL_MAILER=log
+MAIL_FROM_ADDRESS="support@example.com"
+MAIL_FROM_NAME="TicketingSystem"
+```
+
+## Commandes utiles
+- `php artisan migrate:fresh --seed` : Réinitialise la base avec des données de test
+- `npm run dev` : Lancer le front en mode développement
+- `npm run build` : Build de production
+- `composer dev` : Serveur + queue + logs + front simultanés
+
+## Structure du projet
+- `app/Models` : Modèles Eloquent
+- `app/Http/Controllers` : Logique métier
+- `resources/views` : Vues Blade
+- `routes/web.php` : Routes principales
+- `database/seeders` : Données de test
+- `public/` : Entrée web
+
+## Lancement rapide
+```bash
+git clone https://github.com/votre-utilisateur/Ticketing-System.git
+cd ticketing-system
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+npm run dev
+php artisan serve
+```
+Accédez à http://localhost:8000.
+
+## Contribution
+Les contributions sont les bienvenues ! Veuillez ouvrir une issue ou une pull request.
+
+## Licence
+Ce projet est sous licence [MIT](https://opensource.org/licenses/MIT).
+
 - Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
 - Database agnostic [schema migrations](https://laravel.com/docs/migrations).
 - [Robust background job processing](https://laravel.com/docs/queues).
