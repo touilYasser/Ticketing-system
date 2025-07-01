@@ -51,7 +51,7 @@
                         <select name="category" id="category" class="mt-1 block w-full rounded border-gray-300 shadow-sm">
                             <option value="" selected>Toutes</option>
                             @foreach($categories as $cat)
-                                <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>{{ ucfirst($cat) }}</option>
+                                <option value="{{ $cat }}" {{ request('category') == $cat && 'selected' }}>{{ ucfirst($cat) }}</option>
                             @endforeach
                         </select>
                     </div>
