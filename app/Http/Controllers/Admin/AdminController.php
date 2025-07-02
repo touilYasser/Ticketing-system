@@ -42,7 +42,7 @@ class AdminController extends Controller
 
     $ticket->save();
 
-    return redirect()->route('admin.dashboard', $ticket->id)
+    return redirect()->route('admin.tickets.show', $ticket->id)
                      ->with('success', 'Agent assigné avec succès');
 }
 
@@ -83,7 +83,7 @@ class AdminController extends Controller
             $ticket->agent->notify(new TicketUpdated($ticket, $message));
         }
 
-        return redirect()->route('admin.tickets.show', $ticket->id)
+        return redirect()->route('admin.dashboard', $ticket->id)
             ->with('success', 'Ticket mis à jour avec succès.');
     }
 
